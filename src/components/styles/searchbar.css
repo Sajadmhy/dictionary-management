@@ -1,0 +1,71 @@
+.searchbar {
+    display: flex;
+    justify-content: center;
+    margin: 20px auto;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+    margin: 0 auto;
+    overflow-y: auto;
+    height: 85vh;
+}
+
+.list div {
+    margin: 5px 0;
+}
+
+.listOption {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.listOption span {
+    flex: 1;
+}
+
+.listOption div {
+    margin-right:  5px;
+}
+
+.listOption input {
+    width: 300px;
+    color: black;
+    background-color: transparent;
+}
+
+.listOption input:disabled {
+    border-style: none;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+}
+
+.modalSpace {
+    margin: 40px;
+}
+
+.buttonSpace {
+    margin: 20px;
+}
+
+.editIcon {
+    color: green;
+    cursor: pointer;
+}
+
+.deleteIcon {
+    color: red;
+    cursor: pointer;
+    padding: 0 20px;
+}
+
+.checkIcon {
+    color: blue;
+    cursor: pointer;
+}

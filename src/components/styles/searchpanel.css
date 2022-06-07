@@ -1,0 +1,55 @@
+.input {
+    display: flex;
+    justify-content: center;
+    margin: 20px auto;
+}
+
+.result {
+    display: flex;
+    justify-content: center;
+    margin: 0 auto;
+    width: 800px;
+}
+
+.actionItems {
+    display: flex;
+    gap: 6px;
+}
+
+.editIcon {
+    color: blue;
+}
+
+.deleteIcon {
+    color: black;
+}
+
+.checkIcon {
+    color: green;
+}
+
+.cancelIcon {
+    color: red;
+}
+
+input {
+    flex: 1;
+    height: 20px;
+    width: 150px;
+    background-color: transparent;
+    font-size: 15px;
+    border-width: 1px;
+    border-style: dotted;
+}
+
+input:disabled {
+    border-style: none;
+}
+
+.modalSpace {
+    margin: 40px;
+}
+
+.buttonSpace {
+    margin: 20px;
+}
