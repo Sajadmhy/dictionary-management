@@ -25,7 +25,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CheckIcon from '@mui/icons-material/Check';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { Modal, Typography, Button } from "@mui/material";
-import { Stack, Autocomplete, MenuItem } from "@mui/material";
+import { Stack, MenuItem } from "@mui/material";
+import { FormControlLabel, Checkbox } from "@mui/material";
 
 function TablePaginationActions(props) {
     const theme = useTheme();
@@ -155,18 +156,20 @@ export default function SearchPanel(props) {
       return [];
     }
   }
-    function autoComplete(word) {
-      if (props.query.length > 2) {
-        Data(word);
-        return words;
-      } else {
-        return [
-          {
-            en: 'Word must be more than 2 letters'
-          }
-        ]
-      }
+
+
+  function autoComplete(word) {
+    if (props.query.length > 2) {
+      Data(word);
+      return words;
+    } else {
+      return [
+        {
+          en: 'Word must be more than 2 letters'
+        }
+      ]
     }
+  }
 
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
@@ -184,11 +187,9 @@ export default function SearchPanel(props) {
     // handles the searchbar input changes
     const inputChange = (e) => {
       props.setQuery(e.target.value)
+      autoComplete(e.target.value);
     }
 
-    useEffect(() => {
-      autoComplete(props.query);
-    },[props.query])
 
     // Opens the Delete submit modal
     const handleOpenDeleteModal = (index) => {
@@ -237,21 +238,27 @@ export default function SearchPanel(props) {
         saveWord(words[index]);
     };
 
-    const handleChangeEn = (index, event) => {
+    const handleChangeEn = (event,id) => {
       const newWords = [...words];
+      const index = words.findIndex((word) => word.id === id);
+
       newWords[index].en = event.target.value;
       setWords(newWords);
     };
 
-    const handleChangeFa = (index, event) => {
+    const handleChangeFa = (event,id) => {
       const newWords = [...words];
+      const index = words.findIndex((word) => word.id === id);
+
       newWords[index].fa = event.target.value;
       setWords(newWords);
     };
 
 
-    const handleChangeWT = (index, event) => {
+    const handleChangeWT = (event,id) => {
       const newWords = [...words];
+      const index = words.findIndex((word) => word.id === id);
+
       newWords[index].wordType = event.target.value;
       setWords(newWords);
     };
@@ -278,7 +285,14 @@ export default function SearchPanel(props) {
                  label="Search"/>
           
         </Stack>
-        <span style={{ width : '100px' }}></span>
+        <span style={{ width : '150px', textAlign: 'center' }}>
+          <FormControlLabel
+            value="top"
+            control={<Checkbox/>}
+            label="Confirmed"
+            labelPlacement="top"
+          />
+        </span>
         <Button variant="outlined" onClick={handleOpenNewWordModal}>New Word</Button>
         </div>
        <div className="result">
@@ -303,18 +317,18 @@ export default function SearchPanel(props) {
                 <input type="text"
                  value={row.en}
                  disabled={!edit[index]}
-                 onChange={(event) => handleChangeEn(index, event)}
+                 onChange={(event) => handleChangeEn(event,row.id)}
                  />
               </StyledTableCell>
               <StyledTableCell align="left">
                 <input type="text" 
                 value={row.fa}
                 disabled={!edit[index]}
-                onChange={(event) => handleChangeFa(index, event)}
+                onChange={(event) => handleChangeFa(event,row.id)}
                 />
                 </StyledTableCell>
               <StyledTableCell align="left">
-                <select value={row.wordType} onChange={(event) => handleChangeWT(index, event)} disabled={!edit[index]}>
+                <select value={row.wordType} onChange={(event) => handleChangeWT(event,row.id)} disabled={!edit[index]}>
                   <option></option>
                   {WordTypes.map((option) => (
                     <option key={option.value} value={option.value}>{option.label}</option>
@@ -368,13 +382,16 @@ export default function SearchPanel(props) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={modalStyle}>
+          <div style={{textAlign: 'center'}}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
             Are you sure?
           </Typography>
+            
           <div className='modalSpace'></div>
           <Button variant='contained' onClick={handleDeleteSubmit}>Yes, Delete it!</Button>
           <span className='buttonSpace'></span>
           <Button variant='outlined' onClick={handleCloseDeleteModal}>No, cancel.</Button>
+          </div>
         </Box>
       </Modal>
       <Modal
@@ -384,6 +401,7 @@ export default function SearchPanel(props) {
         aria-describedby="modal-modal-description"
       >
         <Box sx={modalStyle}>
+          <div style={{textAlign: 'center'}}>
           <TextField
           label="English Word"
           variant="outlined"
@@ -393,6 +411,7 @@ export default function SearchPanel(props) {
             english.en = e.target.value;
             setNewWord(english);
           }}
+          sx={{marginBottom: '10px'}}
           />
           <TextField
           label="Farsi Translation"
@@ -403,6 +422,7 @@ export default function SearchPanel(props) {
             farsi.fa = e.target.value;
             setNewWord(farsi);
           }}
+          sx={{marginBottom: '10px'}}
           />
           <TextField
           label="Word Type"
@@ -417,7 +437,7 @@ export default function SearchPanel(props) {
           sx={{width: 210}}
           >
             {WordTypes.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
+              <MenuItem key={option.value} value={option.value}>
               {option.label}
             </MenuItem>
           ))}
@@ -426,6 +446,7 @@ export default function SearchPanel(props) {
           <Button variant='contained' onClick={handleSubmitNewWord}>Save it!</Button>
           <span className='buttonSpace'></span>
           <Button variant='outlined' onClick={handleCloseNewWordModal}>Close</Button>
+          </div>
         </Box>
       </Modal>
     </div>
