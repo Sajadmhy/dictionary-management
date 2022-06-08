@@ -122,16 +122,16 @@ const modalStyle = {
 };
 
 const WordTypes = [
-  {value: 'NOUN'},
-  {value: 'Pronoun'},
-  {value: 'Adjective'},
-  {value: 'Adverb'},
-  {value: 'Preposition'},
-  {value: 'Conjunction'},
-  {value: 'Interjection'},
-  {value: 'Verb'},
-  {value: 'Phrasal Verb'},
-  {value: 'Phrase'}
+  {label: 'Noun', value: 0},
+  {label: 'Pronoun', value: 1},
+  {label: 'Adjective', value: 2},
+  {label: 'Adverb', value: 3},
+  {label: 'Preposition', value: 4},
+  {label: 'Conjunction', value: 5},
+  {label: 'Interjection', value: 6},
+  {label: 'Verb', value: 7},
+  {label: 'Phrasal Verb', value: 8},
+  {label: 'Phrase', value: 9}
 ]
 
 
@@ -316,16 +316,9 @@ export default function SearchPanel(props) {
               <StyledTableCell align="left">
                 <select value={row.wordType} onChange={(event) => handleChangeWT(index, event)} disabled={!edit[index]}>
                   <option></option>
-                  <option value="Noun">NOUN</option>
-                  <option value="Pronoun">Pronoun</option>
-                  <option value="Adjective">Adjective</option>
-                  <option value="Adverb">Adverb</option>
-                  <option value="Preposition">Preposition</option>
-                  <option value="Conjunction">Conjunction</option>
-                  <option value="Interjection">Interjection</option>
-                  <option value="Verb">Verb</option>
-                  <option value="Phrasal Verb">Phrasal Verb</option>
-                  <option value="Phrase">Phrase</option> 
+                  {WordTypes.map((option) => (
+                    <option key={option.value} value={option.value}>{option.label}</option>
+                  ))}
                 </select>
                 </StyledTableCell>
                 <StyledTableCell>
@@ -425,7 +418,7 @@ export default function SearchPanel(props) {
           >
             {WordTypes.map((option) => (
             <MenuItem key={option.value} value={option.value}>
-              {option.value}
+              {option.label}
             </MenuItem>
           ))}
           </TextField>
