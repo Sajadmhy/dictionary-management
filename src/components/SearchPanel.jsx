@@ -27,6 +27,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import { Modal, Typography, Button } from "@mui/material";
 import { Stack, MenuItem } from "@mui/material";
 import { FormControlLabel, Checkbox } from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
 
 function TablePaginationActions(props) {
     const theme = useTheme();
@@ -275,8 +276,8 @@ export default function SearchPanel(props) {
    return (
        <>
        <div className="input">
+         <div className="searchBar">
        <Stack spacing={2} sx={{ width: 500 }}>
-   
                <TextField 
                  value={props.query}
                  inputValue={props.query}
@@ -285,15 +286,17 @@ export default function SearchPanel(props) {
                  label="Search"/>
           
         </Stack>
-        <span style={{ width : '150px', textAlign: 'center' }}>
+          </div>
+            <Button variant="outlined" onClick={handleOpenNewWordModal} sx={{height: '57px', width: '300px'}} ><AddIcon/></Button>
+          <div className="inputSpace"></div>
+        <div className="confirmed">
           <FormControlLabel
             value="top"
             control={<Checkbox/>}
             label="Confirmed"
             labelPlacement="top"
           />
-        </span>
-        <Button variant="outlined" onClick={handleOpenNewWordModal}>New Word</Button>
+        </div>
         </div>
        <div className="result">
        <TableContainer component={Paper}>
@@ -369,7 +372,7 @@ export default function SearchPanel(props) {
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
               ActionsComponent={TablePaginationActions}
-            />
+              />
           </TableRow>
         </TableFooter>
       </Table>

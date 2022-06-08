@@ -2,7 +2,17 @@
     display: flex;
     justify-content: center;
     margin: 20px auto;
+    width: 800px;
 }
+
+.searchBar {
+    margin: 0 40px 0 0;
+}
+
+.inputSpace {
+    flex: 1;
+}
+
 
 .result {
     display: flex;
@@ -17,19 +27,19 @@
 }
 
 .editIcon {
-    color: blue;
+    color: rgb(255, 255, 0);
 }
 
 .deleteIcon {
-    color: black;
+    color: rgb(187, 2, 2);
 }
 
 .checkIcon {
-    color: green;
+    color: rgb(0, 236, 0);
 }
 
 .cancelIcon {
-    color: red;
+    color: rgb(10, 10, 10);
 }
 
 input {
