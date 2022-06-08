@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { suggestWord, saveWord, deleteWord } from "./GetWords";
 import { TextField } from "@mui/material";
 import { styled } from '@mui/material/styles';
