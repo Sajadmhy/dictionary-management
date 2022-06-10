@@ -28,6 +28,7 @@ import { Modal, Typography, Button } from "@mui/material";
 import { Stack, MenuItem } from "@mui/material";
 import { FormControlLabel, Checkbox } from "@mui/material";
 import AddIcon from '@mui/icons-material/Add';
+import { useRef } from "react";
 
 function TablePaginationActions(props) {
     const theme = useTheme();
@@ -145,10 +146,12 @@ export default function SearchPanel(props) {
   const [openDeleteMdoal, setOpenDeleteModal] = useState(false);
   const [number, setNumber] = useState();
   const [openNewWordModal, setOpenNewWordModal]= useState(false);
-  const [newWord, setNewWord] = useState({id:"",en:"",fa:"",wordType:""})
+  const [newWord, setNewWord] = useState({id:"",en:"",fa:"",wordType:"",confirmed:false})
+  const checkBoxRef = useRef();
+
 
   async function Data(word) {
-    if (word.length > 2) {
+    if (word.en.length > 2) {
       const response = await suggestWord(word).then((value) => value.data);
       console.log(response);
       setWords(response)
@@ -160,16 +163,8 @@ export default function SearchPanel(props) {
 
 
   function autoComplete(word) {
-    if (props.query.length > 2) {
       Data(word);
-      return words;
-    } else {
-      return [
-        {
-          en: 'Word must be more than 2 letters'
-        }
-      ]
-    }
+      // return words;
   }
 
     // Avoid a layout jump when reaching the last page with empty rows.
@@ -186,19 +181,21 @@ export default function SearchPanel(props) {
     }; 
     
     // handles the searchbar input changes
-    const inputChange = (e) => {
-      props.setQuery(e.target.value)
-      autoComplete(e.target.value);
+    const inputQueryChange = (e) => {
+      const newInput = {...props.query}
+      newInput.en = e.target.value;
+
+      props.setQuery(newInput)
+      autoComplete(newInput);
     }
 
+    // handles the confirmed input changes
+    const inputConfirmChange = (e) => {
+      const newInput = {...props.query}
+      newInput.confirmed = e.target.checked;
 
-    // Opens the Delete submit modal
-    const handleOpenDeleteModal = (index) => {
-      setNumber(index);
-      setOpenDeleteModal(true);
-    }
-    const handleCloseDeleteModal = () => {
-      setOpenDeleteModal(false);
+      props.setQuery(newInput);
+      autoComplete(newInput);
     }
 
     // Opens the New Word modal
@@ -208,13 +205,13 @@ export default function SearchPanel(props) {
 
     const handleCloseNewWordModal = () => {
       setOpenNewWordModal(false);
-      setNewWord({id:"",en:"",fa:"",wordType:""});
+      setNewWord({id:"",en:"",fa:"",wordType:"",confirmed:false});
     }
 
     // Submits the new word to the server
     const handleSubmitNewWord = () => {
       saveWord(newWord);
-      setNewWord({id:"",en:"",fa:"",wordType:""});
+      setNewWord({id:"",en:"",fa:"",wordType:"",confirmed:false});
       setOpenNewWordModal(false);
     }
 
@@ -265,12 +262,32 @@ export default function SearchPanel(props) {
     };
 
 
+    const handleChangeConf = (event,id) => {
+      const newWords = [...words];
+      const index = words.findIndex((word) => word.id === id);
+
+      newWords[index].confirmed = checkBoxRef.current.checked;
+      setWords(newWords);
+    }
+
+
+    // Opens the Delete submit modal
+    const handleOpenDeleteModal = (index, id) => {
+      setNumber([index, id]);
+      setOpenDeleteModal(true);
+    }
+    const handleCloseDeleteModal = () => {
+      setOpenDeleteModal(false);
+    }
+
+    // Deletes the Item
     const handleDeleteSubmit = (index) => {
       const removeTitle = [...words];
-      deleteWord(removeTitle[number]);
-      removeTitle.splice(number,1);
+      removeTitle.splice(number[0],1);
       setWords(removeTitle);
       setOpenDeleteModal(false);
+
+      deleteWord(number[1]);
   };
 
    return (
@@ -279,24 +296,31 @@ export default function SearchPanel(props) {
          <div className="searchBar">
        <Stack spacing={2} sx={{ width: 500 }}>
                <TextField 
-                 value={props.query}
-                 inputValue={props.query}
-                 onChange={inputChange}
-                 onInputChange={inputChange}
+                 value={props.query.en}
+                 inputValue={props.query.en}
+                 onChange={inputQueryChange}
+                 onInputChange={inputQueryChange}
                  label="Search"/>
           
         </Stack>
           </div>
-            <Button variant="outlined" onClick={handleOpenNewWordModal} sx={{height: '57px', width: '300px'}} ><AddIcon/></Button>
           <div className="inputSpace"></div>
         <div className="confirmed">
           <FormControlLabel
             value="top"
-            control={<Checkbox/>}
+            control={
+            <Checkbox 
+            checked={props.query.confirmed}
+            onChange={inputConfirmChange}
+            />
+          }
             label="Confirmed"
             labelPlacement="top"
           />
         </div>
+        <div className="addIcon">
+          <AddIcon onClick={handleOpenNewWordModal} sx={{ fontSize: '50px'}}/>
+          </div>
         </div>
        <div className="result">
        <TableContainer component={Paper}>
@@ -306,8 +330,8 @@ export default function SearchPanel(props) {
             <StyledTableCell>English Word</StyledTableCell>
             <StyledTableCell >Translation</StyledTableCell>
             <StyledTableCell>Word Type</StyledTableCell>
+            <StyledTableCell>Confirmed</StyledTableCell>
             <StyledTableCell>Actions</StyledTableCell>
-
           </TableRow>
         </TableHead>
         <TableBody>
@@ -339,12 +363,20 @@ export default function SearchPanel(props) {
                 </select>
                 </StyledTableCell>
                 <StyledTableCell>
+                  <input type="checkbox"
+                  checked={row.confirmed}
+                  ref={checkBoxRef}
+                  disabled={!edit[index]}
+                  onChange={(event) => handleChangeConf(event,row.id)}
+                  />
+                </StyledTableCell>
+                <StyledTableCell>
 
                 <div className="actionItems">
                 <div className='checkIcon'><CheckIcon onClick={() => editSave(index)} sx={{height: 30, display: edit[index] ? 'block' : 'none'}}/> </div>
                   <div className='cancelIcon'><CancelIcon onClick={() => editCancel(index)} sx={{height: 30, display: edit[index] ? 'block' : 'none'}}/> </div>
                   <div className='editIcon'><EditIcon onClick={() => editOn(index)} sx={{height: 30, display: edit[index] ? 'none' : 'block' }} /></div>
-                  <div className='deleteIcon'><DeleteIcon onClick={() => handleOpenDeleteModal(index)} sx={{height: 30}}  /></div>
+                  <div className='deleteIcon'><DeleteIcon onClick={() => handleOpenDeleteModal(index,row.id)} sx={{height: 30}}  /></div>
                 </div>
                 </StyledTableCell>
             </StyledTableRow>

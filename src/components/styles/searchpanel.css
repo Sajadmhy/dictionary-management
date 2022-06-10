@@ -9,8 +9,11 @@
     margin: 0 40px 0 0;
 }
 
-.inputSpace {
-    flex: 1;
+.addIcon {
+    color: green;
+    flex: auto;
+    text-align: center;
+    height: 50px;
 }
 
 
